@@ -1,9 +1,12 @@
 //  1   first we have to create a connection setup then get url fr localhost ten we del that get 
 
 const express = require('express');
+// here we are requiring routers
+const studentRouter = require("./routers/student");
 //here we are requiring db connection 
 require("./db/conn");
 const app = express();
+app.use(studentRouter);
 //here we have required students
 //after this step we will go to poastman and we will creae there anew collection
 //after this i have to go postman select students go to bpdy the raw then json
@@ -14,119 +17,18 @@ const Student= require("./model/students");
 //step 5 implementation
 app.use(express.json());
 const port = 8001;
+// ist step creating a new router
+//const router =new express.Router();
+// 2 step we need to define the router
+//router.get("/waleed", (req, res)=>
+//{
+   // res.send("hello from router");
+//})
+//step 3 we have to register our router 
+
+
 
 //2 setp now we have th create new student so for this we have to connetc with mongo db so now we create conn.js
-app.post("/students",(req, res)=>
-{
-   //now i have to fetch data from postman that we created in json form
-   console.log(req.body);
-   const user = new Student(req.body);
-   
-   //   step 5 but this will just output this  [] not correct result for hti we defone xprs json i.e express.json() 
-   //now we have to store this data in database mongoose  so wehave saved this data in in user const variable we will call it
-   //. save methods alsoreturn promises so we use then if successful it show oour data
-   // if not it will show us error
-   user.save().then(()=>
-   {
-       res.status(201).send(user);
-   }).catch ((e)=>
-   {
-       res.status(400).send(e);
-   })
-
-    
-});
-app.post("/std",(req,res)=>
-{
-    res.send("hello ");
-})
-
-// here we use postman for docuent creation with defined schema in student js//
-//now  we have to use get method for reading data
-app.get("/students", async(req, res )=>
-{
-    try{
-        //for this we hae to go postman and click on student registartion add new request
-
-               const studentData         = await Student.find();
-               res.send(studentData);
-
-     }
-    catch(e)
-    {
-res.send(e);
-    }
-
-})
-app.get("/students/:id", async(req ,res)=>
-{
-try
-{
-    //params is used for getting data form url
-    // we have to create a new request for this in postman 
-const _id = req.params.id;
-   const studentData =await Student.findById(_id);
-   res.send(studentData);
-   //if there is error in studentdata we set consition for this
-   if (!studentData)
-   {
-       return res.status(404).send();
-
-   }
-else
-{
-    res.send(studentData)
-}
-
-
-/*
-console.log(req.params.id);
-res.send(req.params.id);*/
-}
-catch(e)
-{
-    res.status(500).send(e);
-}
-});
-
-//update Students by id  we will use patch method
-app.patch("/students/:id", async(req,res)=>
-{
-    // we have to create a new request fro update it is mendetory to create a new requst for every request in postman
-try{
-const _id = req.params.id;
-//if we donot write new true the data we updated will not show in postman by first send click 
-//for this we use new:true;
-// if this this findbyIdupdate will throw error  then we have to use findandmodify false in connection file
-         const updateStudents =await Student.findByIdAndUpdate(_id, req.body,{new :true});
-   res.send(updateStudents);
-}
-catch(e)
-{
-res.status(404).send(e);
-}
-
-
-}) 
-// delete student by  id
-app.delete("/students/:id", async(req, res)=>
-{
-try{
-    //const _id = req.params.id;
-    //we have to create a delete req in postman for this
-      const deleteStudent= await  Student.findByIdAndDelete(req.params.id);
-      
-      if(!req.params.id)
-      {
-          return res.status(400).send();
-      }
-res.send(deleteStudent);
-}
-catch(er)
-{
-   res.status(500).send(er)  ;
-}
-})
 
 
 app.listen(port, ()=>
